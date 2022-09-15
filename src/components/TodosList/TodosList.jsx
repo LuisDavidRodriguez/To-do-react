@@ -1,11 +1,19 @@
-/* eslint-disable react/jsx-boolean-value */
 import React, { Component, useState } from 'react';
 import PropTypes from 'prop-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import * as iconsRegular from '@fortawesome/free-regular-svg-icons';
+import styles from './todosList.module.scss';
 
 // eslint-disable-next-line react/prefer-stateless-function
 export default class TodosList extends Component {
   render() {
-    const { todos, addCheck, modifyTitle } = this.props;
+    const {
+      todos,
+      addCheck,
+      modifyTitle,
+      deleteItem,
+    } = this.props;
+
     const items = todos.map((object) => (
       <ItemList
         key={object.id}
@@ -14,11 +22,12 @@ export default class TodosList extends Component {
         completed={object.completed}
         addCheck={addCheck}
         modifyTitle={modifyTitle}
+        deleteItem={deleteItem}
       />
     ));
 
     return (
-      <ul>
+      <ul className={styles.list}>
         {items}
       </ul>
     );
@@ -32,10 +41,11 @@ const ItemList = (props) => {
     completed,
     addCheck,
     modifyTitle,
+    deleteItem,
   } = props;
 
   const [input, setInput] = useState(title);
-  const [editable, setEditable] = useState(true);
+  const [readOnly, setReadOnly] = useState(true);
 
   const handleInput = (event) => {
     setInput(event.target.value);
@@ -48,72 +58,90 @@ const ItemList = (props) => {
         console.log('The value is empty');
         return;
       }
-
+      setInput(clean);
       modifyTitle(event.target.id, clean);
-      setEditable(true);
+      setReadOnly(true);
     }
   };
 
   const handleDoubleClick = () => {
-    setEditable(false);
+    setReadOnly(false);
   };
 
   const handleBlur = () => {
-    setEditable(true);
+    setReadOnly(true);
     setInput(title);
   };
 
-  let style = { textDecoration: 'none' };
+  const inputStyle = {};
+  inputStyle.textDecoration = 'none';
+
   if (completed) {
-    style = { textDecoration: 'line-through' };
+    inputStyle.textDecoration = readOnly ? 'line-through' : 'none';
   }
 
+  const inputClassName = readOnly ? styles.input : `${styles.input} ${styles.readOnly}`;
+
   return (
-    <li id={id}>
+    <li id={id} className={styles.taskContainer}>
       <input id={id} type="checkbox" checked={completed} onChange={addCheck} />
       <input
         id={id}
         value={input}
         onChange={handleInput}
-        style={style}
-        onKeyPress={handleEnter}
-        readOnly={editable}
         onDoubleClick={handleDoubleClick}
         onBlur={handleBlur}
+        onKeyPress={handleEnter}
+        style={inputStyle}
+        readOnly={readOnly}
+        className={inputClassName}
+        title="Double click to edit me! :D"
       />
+      <span className={styles.trashContainer}>
+        <FontAwesomeIcon
+          id={id}
+          icon={iconsRegular.faTrashAlt}
+          className={styles.icons}
+          onClick={(event) => deleteItem(event.target.id)}
+        />
+      </span>
     </li>
   );
 };
 
 ItemList.defaultProps = {
+  deleteItem: null,
   modifyTitle: null,
-  id: 0,
+  id: '0',
   title: '',
   completed: false,
   addCheck: null,
 };
 
 ItemList.propTypes = {
+  deleteItem: PropTypes.func,
   modifyTitle: PropTypes.func,
-  id: PropTypes.number,
+  id: PropTypes.string,
   title: PropTypes.string,
   completed: PropTypes.bool,
   addCheck: PropTypes.func,
 };
 
 TodosList.defaultProps = {
+  deleteItem: null,
   modifyTitle: null,
   addCheck: null,
   todos: [],
 };
 
 TodosList.propTypes = {
+  deleteItem: PropTypes.func,
   modifyTitle: PropTypes.func,
   addCheck: PropTypes.func,
   todos: PropTypes.arrayOf(
     PropTypes.shape(
       {
-        id: PropTypes.number,
+        id: PropTypes.string,
         title: PropTypes.string,
         completed: PropTypes.bool,
       },
