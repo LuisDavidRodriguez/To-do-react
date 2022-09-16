@@ -30,11 +30,11 @@ If you installed git you can clone the code to your machine, or download a ZIP o
 - npm install
 - npm start (to start/run the project)
 
-[Download the ZIP from this location](https://github.com/LuisDavidRodriguez/math-magician/archive/refs/heads/development.zip), or run the following [git](https://git-scm.com/downloads)
+[Download the ZIP from this location](https://github.com/LuisDavidRodriguez/To-do-react/archive/refs/heads/development.zip), or run the following [git](https://git-scm.com/downloads)
 command to clone the files to your machine:
 
 ```bash
-git clone git@github.com:LuisDavidRodriguez/math-magician.git
+git clone git@github.com:LuisDavidRodriguez/To-do-react.git
 ```
 - Once the files are on your machine, open the _Portfolio_ folder in [Visual Studio Code](https://code.visualstudio.com/)
 
