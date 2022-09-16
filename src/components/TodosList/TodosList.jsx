@@ -1,8 +1,11 @@
 import React, { Component, useState } from 'react';
 import PropTypes from 'prop-types';
+import { DndProvider, useDrag } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as iconsRegular from '@fortawesome/free-regular-svg-icons';
 import styles from './todosList.module.scss';
+import itemTypes from '../../modules/constants';
 
 // eslint-disable-next-line react/prefer-stateless-function
 export default class TodosList extends Component {
@@ -27,9 +30,11 @@ export default class TodosList extends Component {
     ));
 
     return (
-      <ul className={styles.list}>
-        {items}
-      </ul>
+      <DndProvider backend={HTML5Backend}>
+        <ul className={styles.list}>
+          {items}
+        </ul>
+      </DndProvider>
     );
   }
 }
@@ -43,9 +48,15 @@ const ItemList = (props) => {
     modifyTitle,
     deleteItem,
   } = props;
-
   const [input, setInput] = useState(title);
   const [readOnly, setReadOnly] = useState(true);
+
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: itemTypes.TASK,
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
 
   const handleInput = (event) => {
     setInput(event.target.value);
@@ -83,7 +94,17 @@ const ItemList = (props) => {
   const inputClassName = readOnly ? styles.input : `${styles.input} ${styles.readOnly}`;
 
   return (
-    <li id={id} className={styles.taskContainer}>
+    <li
+      id={id}
+      className={styles.taskContainer}
+      ref={drag}
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+        fontSize: 25,
+        fontWeight: 'bold',
+        cursor: 'move',
+      }}
+    >
       <input id={id} type="checkbox" checked={completed} onChange={addCheck} />
       <input
         id={id}

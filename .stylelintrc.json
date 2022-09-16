@@ -5,16 +5,15 @@
     "at-rule-no-unknown": [
       true,
       {
-        "ignoreAtRules": ["tailwind", "apply", "variants", "responsive", "screen"]
+        "ignoreAtRules": ["tailwind", "apply", "variants", "responsive", "screen", "use", "mixin", "include", "if", "return", "else", "warn", "function", "extend"]
       }
     ],
     "scss/at-rule-no-unknown":  [
       true,
       {
-        "ignoreAtRules": ["tailwind", "apply", "variants", "responsive", "screen"]
+        "ignoreAtRules": ["tailwind", "apply", "variants", "responsive", "screen", "use", "mixin", "include", "if", "return", "else", "warn", "function", "extend"]
       }
-    ],
-    "csstree/validator": true
+    ]
   },
   "ignoreFiles": ["build/**", "dist/**", "**/reset*.css", "**/bootstrap*.css", "**/*.js", "**/*.jsx"]
 }
